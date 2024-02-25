@@ -1,20 +1,14 @@
-#Build stage
-FROM node:14 AS build
+## Use slim to be not bloated
+FROM node:14-slim
 RUN apt-get update && apt-get upgrade -y
+# Set ENV
+ENV NODE_ENV=production DB_HOST=item-db
 WORKDIR /app
+# Copy package*.json first to check for changes, else cache
 COPY package*.json .
 RUN npm install --production --unsafe-perm
+# Copy all after installing if there is source code change, else cache
 COPY . .
-RUN npm run build && rm -rf node_modules
-
-#Production stage
-FROM node:14-slim
-ENV NODE_ENV=production DB_HOST=item-db
-USER node
-RUN mkdir /home/node/app
-WORKDIR /home/node/app
-COPY --chown=node:node --from=build /app .
-COPY --chown=node:node --from=build /app/package*.json .
-RUN npm ci 
+RUN npm run build
 EXPOSE 8080
 CMD [ "npm", "start" ]
