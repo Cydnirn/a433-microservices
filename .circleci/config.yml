@@ -1,0 +1,25 @@
+version: 2.1
+orbs:
+    docker: circleci/docker@2.5.0
+    go: circleci/go@1.11.0
+jobs:
+    lint-dockerfile:
+        executor: docker/machine
+        steps:
+            - checkout
+            - docker/dockerlint:
+                  dockerfile: ./Dockerfile
+                  treat-warnings-as-errors: true
+    test-app:
+        executor: go/default
+        steps:
+            - checkout
+            - run:
+                  name: Run Test
+                  command: go test -v -short --count=1 $(go list ./...)
+
+workflows:
+    build-test-deploy:
+        jobs:
+            - lint-dockerfile
+            - test-app
