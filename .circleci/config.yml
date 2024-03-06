@@ -11,7 +11,7 @@ jobs:
                   dockerfile: ./Dockerfile
                   treat-warnings-as-errors: true
     test-app:
-        executor: go/default
+        executor: go/default:1.11.0
         steps:
             - checkout
             - run:
