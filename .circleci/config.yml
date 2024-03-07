@@ -1,0 +1,18 @@
+version: 2.1
+orbs:
+    docker: circleci/docker@2.5.0
+jobs:
+    lint-dockerfile:
+        executor: docker/machine
+        steps:
+            - checkout
+            - docker/dockerlint:
+                  dockerfile: ./Dockerfile
+                  treat-warnings-as-errors: true
+    
+
+workflows:
+    build-test-deploy:
+        jobs:
+            - lint-dockerfile
+            
