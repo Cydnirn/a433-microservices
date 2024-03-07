@@ -23,7 +23,7 @@ jobs:
         working_directory: ~/workspace/repo
         steps:
             - attach_workspace:
-                  at: ~/workspace
+                  at: ~/workspace/repo
             - run:
                   name: Run Test
                   command: go test -v -short --count=1 $(go list ./...)
@@ -34,7 +34,7 @@ jobs:
             - docker/build
 
 workflows:
-    build-test-deploy:
+    build-test-deploy-karsajobs:
         jobs:
             - lint-dockerfile
             - test-app
