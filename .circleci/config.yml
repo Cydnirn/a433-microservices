@@ -25,16 +25,26 @@ jobs:
             - attach_workspace:
                   at: ~/workspace
             - run:
-                  name: List workspace
-                  command: ls -la
-            - run:
                   name: Run Test
                   command: go test -v -short --count=1 $(go list ./...)
     build-app-karsajobs:
         executor: docker/machine
         working_directory: ~/workspace/repo
         steps:
-            - docker/build
+            - attach_workspace:
+                  at: ~/workspace
+            - docker/build:
+                  dockerfile: ./Dockerfile
+                  image: karsajobs
+                  tag: latest
+                  registry: ghcr.io
+            - run:
+                  name: Login to ghcr.io
+                  command: docker login ghcr.io -u $GITHUB_USERNAME -p $GITHUB_TOKEN
+            - docker/push:
+                  image: ghcr.io/karsajobs/karsajobs
+                  tag: latest
+                  registry: ghcr.io
 
 workflows:
     build-test-deploy-karsajobs:
@@ -42,4 +52,8 @@ workflows:
             - lint-dockerfile
             - test-app:
                   requires:
+                      - lint-dockerfile
+            - build-app-karsajobs:
+                  requires:
+                      - test-app
                       - lint-dockerfile
