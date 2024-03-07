@@ -8,11 +8,11 @@ jobs:
         working_directory: ~/workspace/repo
         steps:
             - checkout:
-                  path: ~/workspace/repo
+                  path: /workspace/repo
             - persist_to_workspace:
-                  root: ~/workspace
+                  root: /workspace
                   paths:
-                      - repo/
+                      - repo
             - docker/dockerlint:
                   dockerfile: ./Dockerfile
                   treat-warnings-as-errors: true
@@ -20,10 +20,13 @@ jobs:
         executor:
             name: go/default
             tag: "1.16"
-        working_directory: ~/workspace/repo
+        working_directory: /workspace/repo
         steps:
             - attach_workspace:
-                  at: ~/workspace/repo
+                  at: /workspace/repo
+            - run:
+                  name: List workspace
+                  command: ls -la
             - run:
                   name: Run Test
                   command: go test -v -short --count=1 $(go list ./...)
