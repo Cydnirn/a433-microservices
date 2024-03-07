@@ -5,7 +5,7 @@ orbs:
 jobs:
     lint-dockerfile:
         executor: docker/machine
-        working_directory: ~/workspace/repo
+        working_directory: /workspace/repo
         steps:
             - checkout:
                   path: /workspace/repo
