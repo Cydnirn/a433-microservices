@@ -6,19 +6,31 @@ jobs:
     lint-dockerfile:
         executor: docker/machine
         steps:
-            - checkout
+            - checkout:
+                  path: ~/workspace/repo
+            - persist_to_workspace:
+                  root: ~/workspace
+                  paths:
+                      - repo/
             - docker/dockerlint:
                   dockerfile: ./Dockerfile
                   treat-warnings-as-errors: true
     test-app:
         executor:
             name: go/default
-            tag: '1.16'
+            tag: "1.16"
+        working_directory: ~/workspace/repo
         steps:
-            - checkout
+            - attach_workspace:
+                  at: ~/workspace
             - run:
                   name: Run Test
                   command: go test -v -short --count=1 $(go list ./...)
+    build-app-karsajobs:
+        executor: docker/machine
+        working_directory: ~/workspace/repo
+        steps:
+            - docker/build
 
 workflows:
     build-test-deploy:
