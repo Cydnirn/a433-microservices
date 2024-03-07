@@ -23,7 +23,7 @@ jobs:
         working_directory: ~/workspace/repo
         steps:
             - attach_workspace:
-                  at: ~/workspace/repo
+                  at: ~/workspace
             - run:
                   name: List workspace
                   command: ls -la
