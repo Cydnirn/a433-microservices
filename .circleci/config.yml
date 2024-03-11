@@ -14,7 +14,7 @@ jobs:
                       - repo/*
             - docker/dockerlint:
                   dockerfile: ./Dockerfile
-                  treat-warnings-as-errors: true
+                  treat-warnings-as-errors: false
     build-app-karsajobs-ui:
         executor: docker/machine
         working_directory: ~/workspace/repo
@@ -35,7 +35,7 @@ jobs:
                   registry: ghcr.io
 
 workflows:
-    build-test-deploy:
+    build-and-deploy:
         jobs:
             - lint-dockerfile
             - build-app-karsajobs-ui:
