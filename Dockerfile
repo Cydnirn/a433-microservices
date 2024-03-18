@@ -1,17 +1,22 @@
 FROM node:18-bookworm-slim
 
+#Expose port 3001
 ENV PORT 3001
 
+#Use not root user
 USER node
 
+#Create directory with user node
 RUN mkdir /home/node/app
 
+#Set workdir
 WORKDIR /home/node/app
 
-COPY --chown=node:node package*.json .
+#Copy All files
+COPY --chown=node:node . .
 
 RUN npm install
 
-COPY --chown=node:node . .
 
-CMD [ "npm", "start" ]
+#Runs erver
+CMD [ "node", "index.js" ]
